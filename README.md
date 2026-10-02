@@ -8,11 +8,14 @@ Site publicado: `https://baila-activa-membros.vercel.app/`. Com Node.js instalad
 
 ## O que já funciona
 
+- Rota inicial de 7 dias com aulas curtas e avanço salvo no dispositivo
 - Busca por aula, ritmo e canal
 - Filtros por estilo e tipo de sessão
 - Reprodução incorporada de vídeos e playlists
 - Reprodução dentro da área de membros, com tentativa de recarga caso o navegador bloqueie o player
 - Favoritos e aulas vistas salvos no dispositivo
+- Navegação fixa, busca visível e cartões maiores no celular
+- Carregamento gradual do catálogo e imagens da marca compactadas
 - Layout responsivo para celular e desktop
 
 ## Estrutura

@@ -145,7 +145,7 @@
     }
     const frame = document.createElement("iframe");
     frame.title = item.title;
-    frame.src = type === "video" ? `https://www.youtube.com/embed/${encodeURIComponent(id)}?rel=0&playsinline=1` : item.ids ? `https://www.youtube.com/embed/${encodeURIComponent(item.ids[0])}?playsinline=1&playlist=${item.ids.slice(1).map(encodeURIComponent).join(",")}` : `https://www.youtube.com/embed?listType=playlist&list=${encodeURIComponent(id)}&playsinline=1`;
+    frame.src = type === "video" ? `https://www.youtube.com/embed/${encodeURIComponent(id)}?rel=0&playsinline=1&hl=es-419` : item.ids ? `https://www.youtube.com/embed/${encodeURIComponent(item.ids[0])}?playsinline=1&hl=es-419&playlist=${item.ids.slice(1).map(encodeURIComponent).join(",")}` : `https://www.youtube.com/embed?listType=playlist&list=${encodeURIComponent(id)}&playsinline=1&hl=es-419`;
     frame.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
     frame.referrerPolicy = "strict-origin-when-cross-origin";
     frame.allowFullscreen = true;
