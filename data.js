@@ -100,6 +100,15 @@ window.BAILA_DATA = {
     ["pVwNMLoLM7M","40 minutos de baile fitness","Marichuy Hernandez Dance",null,"largas,cardio"],
     ["s-aQ3EAMm8M","Zumba fitness · baile completo","BoomBox",null,"largas,zumba"],
   ].map(([id,title,channel,duration,tags])=>({id,title,channel,duration,tags:tags.split(",")})),
+  path: [
+    {id:"sQamBlKT15M",time:"10 min",note:"Empieza con una sesión corta para soltar el cuerpo."},
+    {id:"utNwIlMApIg",time:"10 min",note:"Prueba salsa, cumbia y merengue en una sola clase."},
+    {id:"9cmBGuo04lI",time:"15 min",note:"Aprende una secuencia de salsa paso a paso."},
+    {id:"dQNxnvOxDeY",time:"10 min",note:"Muévete con un merengue alegre y fácil de seguir."},
+    {id:"7SUQzX4djtc",time:"25 min",note:"Sigue bailando con una opción suave y sin saltos."},
+    {id:"BEGafStLoIQ",time:"15 min",note:"Baila canciones de Shakira a tu ritmo."},
+    {id:"r09zk5mp_Nk",time:"22 min",note:"Termina la semana con una clase completa de Zumba."}
+  ],
   playlists: [
     {id:"PLsdhqmqbkMdEq4v-sLftsQTnsgqjkzhaA",title:"Zumba para bajar de peso",channel:"DeportesUncomo",preview:"r09zk5mp_Nk",tone:"coral"},
     {id:"PLJR0D-2_u3Q26x801K3iYgIKjTdsw_-Mk",title:"Música para hacer Zumba en casa",channel:"Gitano Urbano",preview:"un9inxYgTTA",tone:"rose"},

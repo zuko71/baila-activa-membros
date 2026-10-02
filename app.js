@@ -1,16 +1,18 @@
 (() => {
-  const {videos, playlists} = window.BAILA_DATA;
+  const {videos, playlists, path: starterPath} = window.BAILA_DATA;
   const $ = (selector) => document.querySelector(selector);
   const $$ = (selector) => [...document.querySelectorAll(selector)];
   const storageKey = "baila-activa-membros-v1";
   let saved = {favorites: [], completed: []};
   try { saved = {...saved, ...JSON.parse(localStorage.getItem(storageKey) || "{}")}; } catch {}
-  const favorites = new Set(saved.favorites || []);
-  const completed = new Set(saved.completed || []);
+  const favorites = new Set(Array.isArray(saved.favorites) ? saved.favorites : []);
+  const completed = new Set(Array.isArray(saved.completed) ? saved.completed : []);
   const allowedViews = new Set(["inicio", "explorar", "colecciones", "favoritos", "progreso"]);
-  const state = {view: allowedViews.has(location.hash.slice(1)) ? location.hash.slice(1) : "inicio", filter: "todos", query: "", visible: 12, active: null, focusBefore: null};
+  const batchSize = () => matchMedia("(max-width:650px)").matches ? 6 : 12;
+  const state = {view: allowedViews.has(location.hash.slice(1)) ? location.hash.slice(1) : "inicio", filter: "todos", query: "", visible: batchSize(), active: null, focusBefore: null, selectedDay: Math.max(0, starterPath.findIndex(item => !completed.has(item.id)))};
   const tagLabels = {inicio:"Para empezar",cumbia:"Cumbia",salsa:"Salsa",bachata:"Bachata",merengue:"Merengue",reggaeton:"Reggaetón",zumba:"Zumba",cardio:"Cardio dance",suave:"Sin saltos",largas:"Clase larga",latinos:"Ritmos latinos",cortas:"Clase corta"};
   let playerTimer;
+  let renderedPlaylistView = "";
 
   function store() {
     try { localStorage.setItem(storageKey, JSON.stringify({favorites:[...favorites], completed:[...completed]})); } catch {}
@@ -21,7 +23,7 @@
   function setView(view, updateHash=true) {
     if (!allowedViews.has(view)) return;
     state.view = view;
-    state.visible = 12;
+    state.visible = batchSize();
     if (updateHash && location.hash.slice(1) !== view) history.replaceState(null, "", "#" + view);
     render();
     window.scrollTo({top:0,behavior:"smooth"});
@@ -49,19 +51,50 @@
     </article>`;
   }
   function renderVideos() {
+    if (state.view === "colecciones") { $("#videoGrid").replaceChildren(); $("#emptyState").hidden = true; $("#loadMore").hidden = true; return; }
     const list = visibleVideos();
-    const limit = state.view === "inicio" ? 8 : state.visible;
+    const limit = state.view === "inicio" ? (matchMedia("(max-width:650px)").matches ? 3 : 8) : state.visible;
     $("#videoGrid").innerHTML = list.slice(0,limit).map(card).join("");
     $("#resultCount").textContent = `${list.length} ${list.length === 1 ? "video" : "videos"}`;
     $("#emptyState").hidden = list.length > 0;
+    if (!list.length) {
+      const empty = state.view === "favoritos" ? ["Aún no guardaste clases", "Toca el corazón de una clase para encontrarla aquí."] : state.view === "progreso" ? ["Tu camino empieza con una clase", "Después de bailar, márcala como vista para verla aquí."] : ["No encontramos clases aquí", "Prueba con otro ritmo o cambia tu búsqueda."];
+      $("#emptyTitle").textContent = empty[0];
+      $("#emptyDescription").textContent = empty[1];
+    }
     $("#loadMore").hidden = state.view === "inicio" || list.length <= state.visible;
   }
   function renderPlaylists() {
+    if (!["inicio", "colecciones"].includes(state.view) || renderedPlaylistView === state.view) return;
     const list = state.view === "inicio" ? playlists.slice(0,3) : playlists;
     $("#playlistGrid").innerHTML = list.map(p => `<button type="button" class="playlist-card tone-${esc(p.tone)}" data-playlist="${esc(p.id)}" aria-label="Abrir playlist ${esc(p.title)}">
       <span class="playlist-image"><img src="${thumb(p.preview)}" alt="" loading="lazy" decoding="async" width="320" height="180"><span class="playlist-symbol">♫</span></span>
       <span class="playlist-copy"><span>${p.ids ? "SELECCIÓN DE VIDEOS" : "PLAYLIST DE YOUTUBE"}</span><strong>${esc(p.title)}</strong><small>${esc(p.channel)}</small></span><span class="playlist-arrow">↗</span>
     </button>`).join("");
+    renderedPlaylistView = state.view;
+  }
+  function renderPath() {
+    const done = starterPath.filter(item => completed.has(item.id)).length;
+    const next = starterPath.findIndex(item => !completed.has(item.id));
+    const selected = starterPath[state.selectedDay] || starterPath[0];
+    const video = videos.find(item => item.id === selected.id);
+    $("#pathCounter").textContent = `${done} de ${starterPath.length} completados`;
+    $("#pathProgressBar").style.width = `${Math.round(done / starterPath.length * 100)}%`;
+    $(".path-progress").setAttribute("aria-valuenow", String(done));
+    $("#pathProgressSummary").textContent = done === starterPath.length ? "¡Terminaste los 7 días! Repite tus clases favoritas o descubre un ritmo nuevo." : `Llevas ${done} de ${starterPath.length} días. ${done ? "Sigue cuando te apetezca, sin perder tu avance." : "Comienza por el día 1 y avanza a tu ritmo."}`;
+    if (state.view !== "inicio") return;
+    $("#pathDays").innerHTML = starterPath.map((item, index) => `<button type="button" data-day="${index}" class="path-day ${state.selectedDay === index ? "is-active" : ""} ${completed.has(item.id) ? "is-complete" : ""}" aria-pressed="${state.selectedDay === index}" aria-label="Día ${index + 1}${completed.has(item.id) ? ", visto" : ""}"><span>${completed.has(item.id) ? "✓" : String(index + 1)}</span><small>Día ${index + 1}</small></button>`).join("");
+    $("#pathLabel").textContent = `DÍA ${state.selectedDay + 1} · ${selected.time}`;
+    $("#pathTitle").textContent = video.title;
+    $("#pathDescription").textContent = selected.note;
+    $("#pathChannel").textContent = video.channel;
+    const image = $("#pathThumb");
+    const imageUrl = thumb(selected.id);
+    if (image.getAttribute("src") !== imageUrl) image.src = imageUrl;
+    image.alt = `Vista previa de ${video.title}`;
+    $("#playPath").dataset.video = selected.id;
+    $("#startFeatured").dataset.video = starterPath[next < 0 ? 0 : next].id;
+    $("#startFeatured").innerHTML = `${done ? (next < 0 ? "Volver a bailar" : `Continuar: día ${next + 1}`) : "Empezar con el día 1"} <span>▶</span>`;
   }
   function renderProgress() {
     $("#statVideos").textContent = videos.length;
@@ -72,7 +105,7 @@
     $("#progressMessage").textContent = completed.size ? `Ya marcaste ${completed.size} ${completed.size === 1 ? "clase como vista" : "clases como vistas"}. Elige la siguiente cuando te apetezca.` : "Empieza con una clase y marca tu avance después de verla.";
   }
   function render() {
-    $$(".nav-item").forEach(b => b.classList.toggle("is-active", b.dataset.view === state.view));
+    $$(".nav-item").forEach(b => {const active=b.dataset.view === state.view;b.classList.toggle("is-active",active);if(active)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current");});
     $$(".home-only").forEach(el => el.hidden = state.view !== "inicio");
     $("#collectionsSection").hidden = !["inicio","colecciones"].includes(state.view);
     $("#librarySection").hidden = state.view === "colecciones";
@@ -87,19 +120,29 @@
     const [kicker,title,subtitle] = headings[state.view] || headings.inicio;
     $("#libraryKicker").textContent = kicker; $("#libraryTitle").textContent = title; $("#librarySubtitle").textContent = subtitle;
     $$(".filter-chip").forEach(b => b.classList.toggle("is-active", b.dataset.filter === state.filter));
-    renderProgress(); renderPlaylists(); renderVideos();
+    renderProgress(); renderPath(); renderPlaylists(); renderVideos();
   }
   function openPlayer(type, id) {
     const item = type === "video" ? videos.find(v => v.id === id) : playlists.find(p => p.id === id);
     if (!item) return;
     state.active = {type,id};
-    state.focusBefore = document.activeElement;
+    if ($("#playerModal").hidden) state.focusBefore = document.activeElement;
     $("#playerTitle").textContent = item.title;
     $("#playerChannel").textContent = item.channel + " · YouTube";
     $("#markComplete").hidden = type !== "video";
     $("#toggleFavorite").hidden = type !== "video";
     $("#markComplete").textContent = completed.has(id) ? "Vista ✓" : "Marcar como vista";
     $("#toggleFavorite").textContent = favorites.has(id) ? "Quitar de favoritos" : "Añadir a favoritos";
+    const next = $("#nextPlayer");
+    if (type === "video") {
+      const pathIndex = starterPath.findIndex(item => item.id === id);
+      const nextId = pathIndex >= 0 && pathIndex < starterPath.length - 1 ? starterPath[pathIndex + 1].id : videos[(videos.findIndex(item => item.id === id) + 1) % videos.length].id;
+      next.dataset.video = nextId;
+      next.hidden = false;
+    } else {
+      next.hidden = true;
+      delete next.dataset.video;
+    }
     const frame = document.createElement("iframe");
     frame.title = item.title;
     frame.src = type === "video" ? `https://www.youtube.com/embed/${encodeURIComponent(id)}?rel=0&playsinline=1` : item.ids ? `https://www.youtube.com/embed/${encodeURIComponent(item.ids[0])}?playsinline=1&playlist=${item.ids.slice(1).map(encodeURIComponent).join(",")}` : `https://www.youtube.com/embed?listType=playlist&list=${encodeURIComponent(id)}&playsinline=1`;
@@ -146,8 +189,10 @@
   document.addEventListener("click", e => {
     const nav = e.target.closest("[data-view]");
     if (nav) { setView(nav.dataset.view); return; }
+    const day = e.target.closest("[data-day]");
+    if (day) { state.selectedDay = Number(day.dataset.day); renderPath(); $("#pathDays").querySelector(`[data-day="${state.selectedDay}"]`)?.focus(); return; }
     const filter = e.target.closest("[data-filter]");
-    if (filter) { state.filter = filter.dataset.filter; state.visible = 12; renderVideos(); $$(".filter-chip").forEach(b=>b.classList.toggle("is-active",b===filter)); return; }
+    if (filter) { state.filter = filter.dataset.filter; state.visible = batchSize(); renderVideos(); $$(".filter-chip").forEach(b=>b.classList.toggle("is-active",b===filter)); return; }
     const favorite = e.target.closest("[data-favorite]");
     if (favorite) { const id=favorite.dataset.favorite; favorites.has(id) ? favorites.delete(id) : favorites.add(id); store(); renderVideos(); return; }
     const video = e.target.closest("[data-video]");
@@ -155,16 +200,15 @@
     const playlist = e.target.closest("[data-playlist]");
     if (playlist) { openPlayer("playlist",playlist.dataset.playlist); return; }
   });
-  $("#searchInput").addEventListener("input", e => { state.query = e.target.value.trim(); if (state.query) state.filter = "todos"; if (state.query && state.view !== "explorar") setView("explorar"); else {state.visible=12;render();} });
-  $("#loadMore").addEventListener("click", () => { state.visible += 12; renderVideos(); });
-  $("#startFeatured").addEventListener("click", () => openPlayer("video","un9inxYgTTA"));
-  $("#featuredCard").innerHTML = `<span class="featured-thumb"><img src="${thumb("un9inxYgTTA")}" alt="" width="320" height="180"><span>▶</span></span><span class="featured-copy"><span class="video-tag">30 MIN · PARA EMPEZAR</span><strong>Latin dance para principiantes</strong><small>Zumba · Una clase para comenzar con energía.</small><span class="featured-cta">Reproducir clase →</span></span>`;
-  $("#featuredCard").addEventListener("click", () => openPlayer("video","un9inxYgTTA"));
+  let searchTimer;
+  $("#searchInput").addEventListener("input", e => { const value = e.target.value.trim(); clearTimeout(searchTimer); searchTimer = setTimeout(() => { state.query = value; if (state.query) state.filter = "todos"; if (state.query && state.view !== "explorar") setView("explorar"); else {state.visible=batchSize();render();} }, 120); });
+  $("#loadMore").addEventListener("click", () => { state.visible += batchSize(); renderVideos(); });
+  $("#emptyAction").addEventListener("click", () => { state.query = ""; state.filter = "todos"; $("#searchInput").value = ""; setView("explorar"); });
   $("#closePlayer").addEventListener("click", closePlayer);
   $("#playerModal").addEventListener("click", e => { if (e.target === $("#playerModal")) closePlayer(); });
   $("#playerModal").addEventListener("click", e => { if (e.target.closest("[data-retry-player]") && state.active) { const {type,id}=state.active; const focusBefore=state.focusBefore; openPlayer(type,id); state.focusBefore=focusBefore; } });
   document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#playerModal").hidden) closePlayer(); });
-  $("#markComplete").addEventListener("click", () => { if (!state.active || state.active.type !== "video") return; const id=state.active.id; completed.has(id) ? completed.delete(id) : completed.add(id); store(); $("#markComplete").textContent=completed.has(id)?"Vista ✓":"Marcar como vista"; renderProgress(); renderVideos(); });
+  $("#markComplete").addEventListener("click", () => { if (!state.active || state.active.type !== "video") return; const id=state.active.id; completed.has(id) ? completed.delete(id) : completed.add(id); store(); $("#markComplete").textContent=completed.has(id)?"Vista ✓":"Marcar como vista"; renderProgress(); renderPath(); renderVideos(); });
   $("#toggleFavorite").addEventListener("click", () => { if (!state.active || state.active.type !== "video") return; const id=state.active.id; favorites.has(id) ? favorites.delete(id) : favorites.add(id); store(); $("#toggleFavorite").textContent=favorites.has(id)?"Quitar de favoritos":"Añadir a favoritos"; renderVideos(); });
   window.addEventListener("hashchange", () => { const view=location.hash.slice(1); if (allowedViews.has(view)) setView(view,false); });
   render();

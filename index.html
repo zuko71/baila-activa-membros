@@ -6,13 +6,14 @@
   <meta name="theme-color" content="#2a102a">
   <meta name="description" content="Tu espacio Baila Activa: descubre clases y coreografías de baile en español.">
   <title>Mi espacio de baile · Baila Activa</title>
-  <link rel="icon" href="assets/logo.webp">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="assets/logo-small.webp">
+  <link rel="preload" as="image" href="assets/hero-small.webp" fetchpriority="high">
+  <link rel="stylesheet" href="styles.css?v=2">
 </head>
 <body>
   <div class="app-shell">
     <aside class="sidebar" aria-label="Navegación principal">
-      <a class="sidebar-brand" href="./" aria-label="Baila Activa, inicio"><img src="assets/logo.webp" alt="Baila Activa"></a>
+      <a class="sidebar-brand" href="./" aria-label="Baila Activa, inicio"><img src="assets/logo-small.webp" alt="Baila Activa" width="360" height="180"></a>
       <div class="sidebar-overline">TU ESPACIO</div>
       <nav class="side-nav" aria-label="Secciones">
         <button type="button" class="nav-item is-active" data-view="inicio"><span class="nav-icon">⌂</span>Inicio</button>
@@ -29,18 +30,18 @@
 
     <div class="main-column">
       <header class="topbar">
-        <img class="mobile-logo" src="assets/logo.webp" alt="Baila Activa">
+        <img class="mobile-logo" src="assets/logo-small.webp" alt="Baila Activa" width="360" height="180">
         <div class="topbar-copy"><span>ÁREA DE BAILE</span><strong>Mi espacio Baila Activa</strong></div>
         <label class="searchbox"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="Busca un ritmo, una clase o un canal…" autocomplete="off" aria-label="Buscar aulas"></label>
         <div class="avatar" aria-label="Baila Activa">BA</div>
       </header>
 
       <nav class="mobile-nav" aria-label="Secciones">
-        <button type="button" class="nav-item is-active" data-view="inicio">Inicio</button>
-        <button type="button" class="nav-item" data-view="explorar">Explorar</button>
-        <button type="button" class="nav-item" data-view="colecciones">Colecciones</button>
-        <button type="button" class="nav-item" data-view="favoritos">Favoritos</button>
-        <button type="button" class="nav-item" data-view="progreso">Progreso</button>
+        <button type="button" class="nav-item is-active" data-view="inicio"><span aria-hidden="true">⌂</span>Inicio</button>
+        <button type="button" class="nav-item" data-view="explorar"><span aria-hidden="true">▦</span>Explorar</button>
+        <button type="button" class="nav-item" data-view="colecciones"><span aria-hidden="true">♫</span>Colecciones</button>
+        <button type="button" class="nav-item" data-view="favoritos"><span aria-hidden="true">♡</span>Favoritos</button>
+        <button type="button" class="nav-item" data-view="progreso"><span aria-hidden="true">◷</span>Progreso</button>
       </nav>
 
       <main class="content">
@@ -48,7 +49,7 @@
           <div class="welcome-copy">
             <span class="eyebrow"><span class="eyebrow-dot"></span> BIENVENIDA A TU ESPACIO</span>
             <h1>Tu momento de <em>bailar</em> empieza aquí.</h1>
-            <p>Encuentra un ritmo que te guste y muévete a tu manera. Hay clases cortas, sesiones completas y playlists para seguir disfrutando.</p>
+            <p>Empieza con una clase corta, sigue tu ruta de 7 días y elige tus ritmos favoritos. A tu ritmo y desde casa.</p>
             <div class="welcome-actions">
               <button type="button" class="btn btn-primary" id="startFeatured">Comenzar a bailar <span>↗</span></button>
               <button type="button" class="btn btn-ghost" data-view="explorar">Ver todas las aulas</button>
@@ -58,15 +59,24 @@
           <span class="welcome-orb orb-one"></span><span class="welcome-orb orb-two"></span>
         </section>
 
+        <section class="home-only starter-path" id="starterPath" aria-label="Ruta para empezar">
+          <div class="section-heading"><div><span class="section-kicker">UN PASO A LA VEZ</span><h2>Tu primera semana de baile</h2><p>Siete clases en español para que sepas exactamente por dónde empezar.</p></div></div>
+          <div class="path-card">
+            <div class="path-topline"><strong>Tu ruta de 7 días</strong><span id="pathCounter">0 de 7 completados</span></div>
+            <div class="path-progress" role="progressbar" aria-label="Progreso de la primera semana" aria-valuemin="0" aria-valuemax="7" aria-valuenow="0"><span id="pathProgressBar"></span></div>
+            <div class="path-days" id="pathDays" role="group" aria-label="Seleccionar día de la ruta"></div>
+            <div class="path-feature">
+              <img id="pathThumb" src="" alt="" width="320" height="180" loading="lazy" decoding="async">
+              <div class="path-feature-copy"><span id="pathLabel">DÍA 1</span><h3 id="pathTitle"></h3><p id="pathDescription"></p><small id="pathChannel"></small><button type="button" class="btn btn-primary" id="playPath">Reproducir clase <span>▶</span></button></div>
+            </div>
+            <p class="path-note">Puedes repetir cualquier día. Marca una clase como vista después de verla para guardar tu avance en este dispositivo.</p>
+          </div>
+        </section>
+
         <section class="home-only home-stats" aria-label="Tu biblioteca">
           <div><span class="stat-icon">▶</span><strong id="statVideos">0</strong><small>videos para explorar</small></div>
           <div><span class="stat-icon">♫</span><strong id="statPlaylists">0</strong><small>colecciones de baile</small></div>
           <div><span class="stat-icon">✓</span><strong id="statCompleted">0</strong><small>clases marcadas como vistas</small></div>
-        </section>
-
-        <section class="home-only featured">
-          <div class="section-heading"><div><span class="section-kicker">PARA EMPEZAR</span><h2>Una clase para hoy</h2><p>Una opción fácil para dar el primer paso.</p></div></div>
-          <button type="button" id="featuredCard" class="featured-card"></button>
         </section>
 
         <section class="collections-section" id="collectionsSection">
@@ -90,13 +100,14 @@
             <button type="button" class="filter-chip" data-filter="largas">Clases largas</button>
           </div>
           <div class="video-grid" id="videoGrid"></div>
-          <div class="empty-state" id="emptyState" hidden><span>♪</span><h3>No encontramos clases aquí</h3><p>Prueba con otro ritmo o cambia tu búsqueda.</p></div>
+          <div class="empty-state" id="emptyState" hidden><span>♪</span><h3 id="emptyTitle">No encontramos clases aquí</h3><p id="emptyDescription">Prueba con otro ritmo o cambia tu búsqueda.</p><button type="button" class="btn btn-ghost" id="emptyAction">Ver todas las aulas</button></div>
           <button type="button" class="load-more" id="loadMore" hidden>Mostrar más clases <span>↓</span></button>
         </section>
 
         <section class="progress-section" id="progressSection" hidden>
           <div class="section-heading"><div><span class="section-kicker">A TU RITMO</span><h2>Mi progreso</h2><p>Marca las clases que terminaste y vuelve cuando quieras.</p></div></div>
           <div class="progress-panel"><div class="progress-ring"><strong id="progressNumber">0</strong><span>clases</span></div><div><h3>Cada baile cuenta</h3><p id="progressMessage">Empieza con una clase y marca tu avance después de verla.</p><div class="progress-track"><span id="progressBar"></span></div><small>Tu progreso se guarda en este dispositivo.</small></div></div>
+          <div class="path-summary"><strong>Tu primera semana</strong><p id="pathProgressSummary">Comienza por el día 1 y avanza a tu ritmo.</p><button type="button" class="btn btn-ghost" data-view="inicio">Volver a mi ruta</button></div>
         </section>
 
         <footer class="footer"><span>© Baila Activa</span><span>Los videos pertenecen a sus respectivos canales de YouTube.</span></footer>
@@ -108,11 +119,11 @@
     <div class="player-dialog" role="dialog" aria-modal="true" aria-labelledby="playerTitle">
       <div class="player-top"><div><span class="section-kicker">AHORA EN REPRODUCCIÓN</span><h2 id="playerTitle"></h2><p id="playerChannel"></p></div><button type="button" class="close-modal" id="closePlayer" aria-label="Cerrar reproductor">×</button></div>
       <div class="player-frame" id="playerFrame"></div>
-      <div class="player-actions"><button type="button" class="btn btn-primary" id="markComplete">Marcar como vista</button><button type="button" class="btn btn-ghost" id="toggleFavorite">Añadir a favoritos</button></div>
+      <div class="player-actions"><button type="button" class="btn btn-primary" id="markComplete">Marcar como vista</button><button type="button" class="btn btn-ghost" id="toggleFavorite">Añadir a favoritos</button><button type="button" class="btn btn-ghost" id="nextPlayer">Probar otra clase →</button></div>
       <p class="player-note">Contenido público del canal indicado, reproducido aquí con el player de YouTube.</p>
     </div>
   </div>
-  <script src="data.js"></script>
-  <script src="app.js"></script>
+  <script src="data.js?v=2"></script>
+  <script src="app.js?v=2"></script>
 </body>
 </html>
