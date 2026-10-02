@@ -4,14 +4,14 @@ Protótipo independente do quiz. É um site estático em espanhol LATAM com 82 v
 
 ## Abrir
 
-Com Node.js instalado, execute `node server.js` nesta pasta e abra `http://127.0.0.1:8765/` no Chrome. Para publicar, envie o conteúdo desta pasta a uma hospedagem estática. Não precisa de chave de API ou banco de dados. A prévia dentro do Codex pode bloquear o player incorporado; nesse caso, o app mostra um link direto para assistir no YouTube.
+Site publicado: `https://baila-activa-membros.vercel.app/`. Com Node.js instalado, também é possível executar `node server.js` nesta pasta e abrir `http://127.0.0.1:8765/` no Chrome. A reprodução incorporada funciona no endereço HTTPS publicado. A prévia local dentro do Codex pode bloquear iframes de vídeo. Não precisa de chave de API ou banco de dados.
 
 ## O que já funciona
 
 - Busca por aula, ritmo e canal
 - Filtros por estilo e tipo de sessão
 - Reprodução incorporada de vídeos e playlists
-- Link para abrir a fonte original no YouTube
+- Reprodução dentro da área de membros, com tentativa de recarga caso o navegador bloqueie o player
 - Favoritos e aulas vistas salvos no dispositivo
 - Layout responsivo para celular e desktop
 

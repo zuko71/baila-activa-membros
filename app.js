@@ -96,15 +96,13 @@
     state.focusBefore = document.activeElement;
     $("#playerTitle").textContent = item.title;
     $("#playerChannel").textContent = item.channel + " · YouTube";
-    const youtubeUrl = type === "video" ? `https://www.youtube.com/watch?v=${encodeURIComponent(id)}` : item.ids ? `https://www.youtube.com/watch?v=${encodeURIComponent(item.ids[0])}` : `https://www.youtube.com/playlist?list=${encodeURIComponent(id)}`;
-    $("#openYouTube").href = youtubeUrl;
     $("#markComplete").hidden = type !== "video";
     $("#toggleFavorite").hidden = type !== "video";
     $("#markComplete").textContent = completed.has(id) ? "Vista ✓" : "Marcar como vista";
     $("#toggleFavorite").textContent = favorites.has(id) ? "Quitar de favoritos" : "Añadir a favoritos";
     const frame = document.createElement("iframe");
     frame.title = item.title;
-    frame.src = type === "video" ? `https://www.youtube.com/embed/${encodeURIComponent(id)}?rel=0` : item.ids ? `https://www.youtube.com/embed/${encodeURIComponent(item.ids[0])}?playlist=${item.ids.slice(1).map(encodeURIComponent).join(",")}` : `https://www.youtube.com/embed?listType=playlist&list=${encodeURIComponent(id)}`;
+    frame.src = type === "video" ? `https://www.youtube.com/embed/${encodeURIComponent(id)}?rel=0&playsinline=1` : item.ids ? `https://www.youtube.com/embed/${encodeURIComponent(item.ids[0])}?playsinline=1&playlist=${item.ids.slice(1).map(encodeURIComponent).join(",")}` : `https://www.youtube.com/embed?listType=playlist&list=${encodeURIComponent(id)}&playsinline=1`;
     frame.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
     frame.referrerPolicy = "strict-origin-when-cross-origin";
     frame.allowFullscreen = true;
@@ -114,7 +112,7 @@
     const showFallback = () => {
       if (state.active?.id !== id || !preview.isConnected) return;
       preview.classList.add("is-fallback");
-      preview.querySelector(".player-preview-copy").innerHTML = `<span class="player-fallback-icon" aria-hidden="true">▶</span><strong>No se pudo abrir el reproductor aquí</strong><small>Puedes ver esta clase directamente en YouTube.</small><a href="${youtubeUrl}" target="_blank" rel="noopener noreferrer">Ver en YouTube ↗</a>`;
+      preview.querySelector(".player-preview-copy").innerHTML = `<span class="player-fallback-icon" aria-hidden="true">▶</span><strong>No se pudo abrir el reproductor aquí</strong><small>Vuelve a intentarlo o abre esta área en un navegador actualizado.</small><button type="button" data-retry-player>Intentar de nuevo ↻</button>`;
     };
     const loaded = () => {
       if (state.active?.id !== id) return;
@@ -164,6 +162,7 @@
   $("#featuredCard").addEventListener("click", () => openPlayer("video","un9inxYgTTA"));
   $("#closePlayer").addEventListener("click", closePlayer);
   $("#playerModal").addEventListener("click", e => { if (e.target === $("#playerModal")) closePlayer(); });
+  $("#playerModal").addEventListener("click", e => { if (e.target.closest("[data-retry-player]") && state.active) { const {type,id}=state.active; const focusBefore=state.focusBefore; openPlayer(type,id); state.focusBefore=focusBefore; } });
   document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#playerModal").hidden) closePlayer(); });
   $("#markComplete").addEventListener("click", () => { if (!state.active || state.active.type !== "video") return; const id=state.active.id; completed.has(id) ? completed.delete(id) : completed.add(id); store(); $("#markComplete").textContent=completed.has(id)?"Vista ✓":"Marcar como vista"; renderProgress(); renderVideos(); });
   $("#toggleFavorite").addEventListener("click", () => { if (!state.active || state.active.type !== "video") return; const id=state.active.id; favorites.has(id) ? favorites.delete(id) : favorites.add(id); store(); $("#toggleFavorite").textContent=favorites.has(id)?"Quitar de favoritos":"Añadir a favoritos"; renderVideos(); });

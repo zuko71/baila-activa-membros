@@ -141,7 +141,7 @@ a{color:inherit}
   .player-preview-copy small{font-size:13px;line-height:1.4;color:#f9e6ee}
   .player-spinner{width:44px;height:44px;border:3px solid rgba(255,255,255,.4);border-top-color:#ff2e7f;border-radius:50%;animation:player-spin .8s linear infinite}
   .player-fallback-icon{display:grid;place-items:center;width:48px;height:48px;background:#ff2e7f;border-radius:50%;font-size:18px}
-  .player-preview-copy a{display:inline-flex;align-items:center;justify-content:center;min-height:42px;margin-top:6px;padding:10px 18px;border-radius:9px;background:#ff2e7f;color:#fff;text-decoration:none;font-weight:800;font-size:13px}
+  .player-preview-copy button{display:inline-flex;align-items:center;justify-content:center;min-height:42px;margin-top:6px;padding:10px 18px;border:0;border-radius:9px;background:#ff2e7f;color:#fff;font-weight:800;font-size:13px;cursor:pointer}
   @keyframes player-spin{to{transform:rotate(360deg)}}
 .player-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px}
 .player-actions a{color:var(--pink);font-size:12px;font-weight:800;margin-left:auto;text-decoration:none}
