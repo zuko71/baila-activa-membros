@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#2a102a">
+  <meta name="description" content="Tu espacio Baila Activa: descubre clases y coreografías de baile en español.">
+  <title>Mi espacio de baile · Baila Activa</title>
+  <link rel="icon" href="assets/logo.webp">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegación principal">
+      <a class="sidebar-brand" href="./" aria-label="Baila Activa, inicio"><img src="assets/logo.webp" alt="Baila Activa"></a>
+      <div class="sidebar-overline">TU ESPACIO</div>
+      <nav class="side-nav" aria-label="Secciones">
+        <button type="button" class="nav-item is-active" data-view="inicio"><span class="nav-icon">⌂</span>Inicio</button>
+        <button type="button" class="nav-item" data-view="explorar"><span class="nav-icon">▦</span>Explorar aulas</button>
+        <button type="button" class="nav-item" data-view="colecciones"><span class="nav-icon">♫</span>Colecciones</button>
+        <button type="button" class="nav-item" data-view="favoritos"><span class="nav-icon">♡</span>Favoritos</button>
+        <button type="button" class="nav-item" data-view="progreso"><span class="nav-icon">◷</span>Mi progreso</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="little-note"><span class="note-spark">✳</span><strong>Un paso a la vez</strong><p>Elige una canción, pulsa play y disfruta tu momento.</p></div>
+        <small>Aulas públicas de YouTube, organizadas para ti.</small>
+      </div>
+    </aside>
+
+    <div class="main-column">
+      <header class="topbar">
+        <img class="mobile-logo" src="assets/logo.webp" alt="Baila Activa">
+        <div class="topbar-copy"><span>ÁREA DE BAILE</span><strong>Mi espacio Baila Activa</strong></div>
+        <label class="searchbox"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="Busca un ritmo, una clase o un canal…" autocomplete="off" aria-label="Buscar aulas"></label>
+        <div class="avatar" aria-label="Baila Activa">BA</div>
+      </header>
+
+      <nav class="mobile-nav" aria-label="Secciones">
+        <button type="button" class="nav-item is-active" data-view="inicio">Inicio</button>
+        <button type="button" class="nav-item" data-view="explorar">Explorar</button>
+        <button type="button" class="nav-item" data-view="colecciones">Colecciones</button>
+        <button type="button" class="nav-item" data-view="favoritos">Favoritos</button>
+        <button type="button" class="nav-item" data-view="progreso">Progreso</button>
+      </nav>
+
+      <main class="content">
+        <section class="home-only welcome">
+          <div class="welcome-copy">
+            <span class="eyebrow"><span class="eyebrow-dot"></span> BIENVENIDA A TU ESPACIO</span>
+            <h1>Tu momento de <em>bailar</em> empieza aquí.</h1>
+            <p>Encuentra un ritmo que te guste y muévete a tu manera. Hay clases cortas, sesiones completas y playlists para seguir disfrutando.</p>
+            <div class="welcome-actions">
+              <button type="button" class="btn btn-primary" id="startFeatured">Comenzar a bailar <span>↗</span></button>
+              <button type="button" class="btn btn-ghost" data-view="explorar">Ver todas las aulas</button>
+            </div>
+          </div>
+          <div class="welcome-image" role="img" aria-label="Tres mujeres bailando juntas"></div>
+          <span class="welcome-orb orb-one"></span><span class="welcome-orb orb-two"></span>
+        </section>
+
+        <section class="home-only home-stats" aria-label="Tu biblioteca">
+          <div><span class="stat-icon">▶</span><strong id="statVideos">0</strong><small>videos para explorar</small></div>
+          <div><span class="stat-icon">♫</span><strong id="statPlaylists">0</strong><small>colecciones de baile</small></div>
+          <div><span class="stat-icon">✓</span><strong id="statCompleted">0</strong><small>clases marcadas como vistas</small></div>
+        </section>
+
+        <section class="home-only featured">
+          <div class="section-heading"><div><span class="section-kicker">PARA EMPEZAR</span><h2>Una clase para hoy</h2><p>Una opción fácil para dar el primer paso.</p></div></div>
+          <button type="button" id="featuredCard" class="featured-card"></button>
+        </section>
+
+        <section class="collections-section" id="collectionsSection">
+          <div class="section-heading"><div><span class="section-kicker">SIGUE EL RITMO</span><h2>Colecciones para no parar</h2><p>Playlists públicas y selecciones de videos para seguir bailando.</p></div><button type="button" class="text-link home-only" data-view="colecciones">Ver todas <span>→</span></button></div>
+          <div class="playlist-grid" id="playlistGrid"></div>
+        </section>
+
+        <section class="library-section" id="librarySection">
+          <div class="section-heading library-heading"><div><span class="section-kicker" id="libraryKicker">BIBLIOTECA</span><h2 id="libraryTitle">Elige tu próxima clase</h2><p id="librarySubtitle">Explora por ritmo o encuentra algo nuevo.</p></div><span class="result-count" id="resultCount"></span></div>
+          <div class="filter-row" id="filterRow" role="group" aria-label="Filtrar por tipo de baile">
+            <button type="button" class="filter-chip is-active" data-filter="todos">Todas</button>
+            <button type="button" class="filter-chip" data-filter="inicio">Para empezar</button>
+            <button type="button" class="filter-chip" data-filter="cumbia">Cumbia</button>
+            <button type="button" class="filter-chip" data-filter="salsa">Salsa</button>
+            <button type="button" class="filter-chip" data-filter="bachata">Bachata</button>
+            <button type="button" class="filter-chip" data-filter="merengue">Merengue</button>
+            <button type="button" class="filter-chip" data-filter="reggaeton">Reggaetón</button>
+            <button type="button" class="filter-chip" data-filter="zumba">Zumba</button>
+            <button type="button" class="filter-chip" data-filter="cardio">Cardio dance</button>
+            <button type="button" class="filter-chip" data-filter="suave">Sin saltos</button>
+            <button type="button" class="filter-chip" data-filter="largas">Clases largas</button>
+          </div>
+          <div class="video-grid" id="videoGrid"></div>
+          <div class="empty-state" id="emptyState" hidden><span>♪</span><h3>No encontramos clases aquí</h3><p>Prueba con otro ritmo o cambia tu búsqueda.</p></div>
+          <button type="button" class="load-more" id="loadMore" hidden>Mostrar más clases <span>↓</span></button>
+        </section>
+
+        <section class="progress-section" id="progressSection" hidden>
+          <div class="section-heading"><div><span class="section-kicker">A TU RITMO</span><h2>Mi progreso</h2><p>Marca las clases que terminaste y vuelve cuando quieras.</p></div></div>
+          <div class="progress-panel"><div class="progress-ring"><strong id="progressNumber">0</strong><span>clases</span></div><div><h3>Cada baile cuenta</h3><p id="progressMessage">Empieza con una clase y marca tu avance después de verla.</p><div class="progress-track"><span id="progressBar"></span></div><small>Tu progreso se guarda en este dispositivo.</small></div></div>
+        </section>
+
+        <footer class="footer"><span>© Baila Activa</span><span>Los videos pertenecen a sus respectivos canales de YouTube.</span></footer>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="playerModal" hidden>
+    <div class="player-dialog" role="dialog" aria-modal="true" aria-labelledby="playerTitle">
+      <div class="player-top"><div><span class="section-kicker">AHORA EN REPRODUCCIÓN</span><h2 id="playerTitle"></h2><p id="playerChannel"></p></div><button type="button" class="close-modal" id="closePlayer" aria-label="Cerrar reproductor">×</button></div>
+      <div class="player-frame" id="playerFrame"></div>
+      <div class="player-actions"><button type="button" class="btn btn-primary" id="markComplete">Marcar como vista</button><button type="button" class="btn btn-ghost" id="toggleFavorite">Añadir a favoritos</button><a id="openYouTube" href="#" target="_blank" rel="noopener noreferrer">Abrir en YouTube ↗</a></div>
+      <p class="player-note">Video público del canal indicado. Si no se reproduce aquí, ábrelo en YouTube.</p>
+    </div>
+  </div>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
